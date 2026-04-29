@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카트라이더 스타일 게임</title>
+<style>
+  body { margin:0; background:#0f172a; display:flex; justify-content:center; align-items:center; height:100vh; }
+  canvas { background:#1e293b; border:4px solid #334155; }
+</style>
+</head>
+<body>
+<canvas id="game" width="600" height="400"></canvas>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+let player = { x:300, y:200, angle:0, speed:0 };
+const keys = {};
+
+function drawKart(){
+  ctx.save();
+  ctx.translate(player.x, player.y);
+  ctx.rotate(player.angle);
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillRect(-10,-5,20,10);
+  ctx.restore();
+}
+
+function drawTrack(){
+  ctx.fillStyle = '#334155';
+  ctx.fillRect(50,50,500,300);
+  ctx.clearRect(100,100,400,200);
+}
+
+function update(){
+  if(keys['ArrowUp']) player.speed += 0.1;
+  if(keys['ArrowDown']) player.speed -= 0.1;
+  if(keys['ArrowLeft']) player.angle -= 0.05;
+  if(keys['ArrowRight']) player.angle += 0.05;
+
+  player.speed *= 0.98; // 마찰
+
+  player.x += Math.cos(player.angle) * player.speed;
+  player.y += Math.sin(player.angle) * player.speed;
+}
+
+function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawTrack();
+  update();
+  drawKart();
+  requestAnimationFrame(loop);
+}
+
+document.addEventListener('keydown', e => keys[e.key]=true);
+document.addEventListener('keyup', e => keys[e.key]=false);
+
+loop();
+</script>
+</body>
+</html>
